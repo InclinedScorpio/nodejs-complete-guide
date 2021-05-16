@@ -1,19 +1,66 @@
-const fs = require("fs");
+const yargs = require("yargs");
+const {addNote, removeNotes, listNotes, readNote} = require("./notes");
 
-/**
- * write text in a file in sync
- * writeFileSync will not append
- */
-// fs.writeFileSync("notes.txt", "My name is Ashutosh Tiwari")
+// cutomize args version
+yargs.version("1.1.0")
 
-fs.appendFileSync("notes.txt", "\n I live in India");
+yargs.command({
+    command: "add",
+    describe: "Add a note",
+    builder: {
+        title: {
+            describe:"Title of the note",
+            demandOption: true,
+            type:'string'
+        },
+        body: {
+            describe:"Body of the note",
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        addNote(argv.title, argv.body);
+    }
+});
 
-// const validator = require("validator")
-// const getNodes = require("./notes");
-const chalk = require("chalk");
-// const msg = getNodes();
+yargs.command({
+    command: "remove",
+    describe: "Remove a note",
+    builder: {
+        title: {
+            describe: "title of note to remove",
+            demandOption: true,
+            type: "string"
+        }
+    },
+    handler(argv) {
+        removeNotes(argv.title)
+    }
+});
 
-// console.log(validator.isEmail("ashu@infosys.com"));
-// console.log(validator.isURL("http://inclined.com"))
+yargs.command({
+    command: "read",
+    describe: "Read a note",
+    builder: {
+        title: {
+            describe: "Title of the note to read",
+            demandOption: true,
+            type: "string"
+        }
+    },
+    handler(argv) {
+        readNote(argv.title)
+    }
+});
 
-console.log(chalk.whiteBright.bgBlack("hey this is 12 errror due to line 9 on app.js inside note file"))
+yargs.command({
+    command: "list",
+    describe: "List all the notes",
+    handler() {
+        listNotes();
+    }
+})
+
+yargs.parse();
+// console.log(yargs.argv);
